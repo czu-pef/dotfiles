@@ -1,0 +1,2 @@
+# Machine name shown in the shell prompt. Set it per machine.
+DOTFILES_HOSTNAME=""
