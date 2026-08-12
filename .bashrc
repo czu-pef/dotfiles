@@ -1,3 +1,5 @@
+export PATH="$HOME/code/bin:/opt/alt/alt-nodejs22/root/usr/bin:$PATH"
+
 MAGENTA="\033[1;31m"
 ORANGE="\033[1;33m"
 GREEN="\033[1;32m"
