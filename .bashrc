@@ -1,5 +1,10 @@
 export PATH="$HOME/code/bin:/opt/alt/alt-nodejs22/root/usr/bin:$PATH"
 
+source ~/code/dotfiles/.aliases_git
+source ~/code/dotfiles/.aliases_filesystem
+source ~/code/dotfiles/.aliases_czu
+source ~/code/dotfiles/.aliases_laravel
+
 MAGENTA="\033[1;31m"
 ORANGE="\033[1;33m"
 GREEN="\033[1;32m"
