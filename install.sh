@@ -40,14 +40,15 @@ warn()  { echo -e "${YELLOW}==>${RESET} $*"; }
 error() { echo -e "${RED}==>${RESET} $*" >&2; }
 
 # Reads from the terminal rather than stdin, so prompts still work when this
-# script arrives through a pipe (curl ... | bash).
+# script arrives through a pipe (curl ... | bash). The question is written to
+# /dev/tty rather than passed to `read -p`, whose prompt goes to stderr and so
+# vanishes for any caller that silences it; stdout is no good either, since
+# every caller runs this in a command substitution and would capture it.
 prompt() {
   local reply
-  if read -r -p "$1" reply 2>/dev/null < /dev/tty; then
-    echo "$reply"
-  else
-    return 1
-  fi
+  printf '%s' "$1" > /dev/tty 2>/dev/null || return 1
+  read -r reply < /dev/tty 2>/dev/null || return 1
+  echo "$reply"
 }
 
 # --- PHP -------------------------------------------------------------------
