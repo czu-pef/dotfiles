@@ -53,18 +53,12 @@ prompt() {
 # --- PHP -------------------------------------------------------------------
 
 # Every place cPanel/CloudLinux hides a PHP binary, newest first.
-php_candidates() {
-  local candidate
-  for candidate in \
-    /opt/alt/php85/usr/bin/php \
-    /opt/alt/php84/usr/bin/php \
-    /opt/cpanel/ea-php85/root/usr/bin/php \
-    /opt/cpanel/ea-php84/root/usr/bin/php \
-    "$(command -v php 2>/dev/null || true)"
-  do
-    [ -n "$candidate" ] && [ -x "$candidate" ] && echo "$candidate"
-  done
-}
+PHP_CANDIDATES=(
+  /opt/alt/php85/usr/bin/php
+  /opt/alt/php84/usr/bin/php
+  /opt/cpanel/ea-php85/root/usr/bin/php
+  /opt/cpanel/ea-php84/root/usr/bin/php
+)
 
 php_version() {
   "$1" -r 'echo PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION;' 2>/dev/null || true
@@ -75,17 +69,20 @@ version_at_least() {
   [ "$(printf '%s\n%s\n' "$2" "$1" | sort -V | head -n1)" = "$2" ]
 }
 
+# A plain loop rather than a pipe or process substitution: CageFS accounts
+# often have no /dev/fd, which is what `< <(...)` needs, and a pipe would put
+# the assignment in a subshell.
 find_php() {
   local candidate version
-  while read -r candidate; do
-    [ -z "$candidate" ] && continue
+  for candidate in "${PHP_CANDIDATES[@]}" "$(command -v php 2>/dev/null || true)"; do
+    [ -n "$candidate" ] && [ -x "$candidate" ] || continue
     version="$(php_version "$candidate")"
-    [ -z "$version" ] && continue
+    [ -n "$version" ] || continue
     if version_at_least "$version" "$MIN_PHP"; then
       echo "$candidate"
       return 0
     fi
-  done < <(php_candidates)
+  done
   return 1
 }
 
