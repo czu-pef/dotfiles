@@ -8,7 +8,7 @@ hosting.
 On a new (or existing) cPanel account, over SSH:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/vitnasinec/dotfiles/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/czu-pef/dotfiles/main/install.sh | bash
 ```
 
 Then source the dotfiles from your `~/.bashrc`, as the script will remind you:

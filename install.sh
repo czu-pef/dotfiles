@@ -2,7 +2,7 @@
 #
 # Bootstrap a cPanel account for running Laravel apps.
 #
-#   curl -fsSL https://raw.githubusercontent.com/vitnasinec/dotfiles/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/czu-pef/dotfiles/main/install.sh | bash
 #
 # 1. Finds a PHP 8.4+ binary and checks the extensions Laravel needs.
 #    Missing ones pause the script with instructions on what to enable.
@@ -15,7 +15,7 @@ set -euo pipefail
 CODE_DIR="$HOME/code"
 BIN_DIR="$CODE_DIR/bin"
 DOTFILES_DIR="$CODE_DIR/dotfiles"
-REPO_URL="https://github.com/vitnasinec/dotfiles.git"
+REPO_URL="https://github.com/czu-pef/dotfiles.git"
 MIN_PHP="8.4"
 
 # Laravel will not boot without these. pdo_mysql/mysqli cover the database.
