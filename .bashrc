@@ -37,6 +37,14 @@ source ~/code/dotfiles/.aliases_filesystem
 source ~/code/dotfiles/.aliases_czu
 source ~/code/dotfiles/.aliases_laravel
 
+# Everything below is for interactive shells only. Bash also sources this file
+# for non-interactive ssh commands (scp, rsync, git over ssh), and stray output
+# on stdout breaks those protocols.
+case $- in
+    *i*) ;;
+    *) return ;;
+esac
+
 if [ -z "${DOTFILES_HOSTNAME:-}" ]; then
     echo -e "${MAGENTA}Warning: DOTFILES_HOSTNAME is not set, edit ~/code/dotfiles/.hostname${RESET}"
     DOTFILES_HOSTNAME="unknown"
