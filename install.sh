@@ -238,6 +238,29 @@ EOF
   info "Installed Composer $("$BIN_DIR/composer" --version --no-ansi 2>/dev/null | awk '{print $3}') at $BIN_DIR/composer"
 }
 
+# --- Shell wiring ----------------------------------------------------------
+
+# An SSH session is a login shell, and login shells read ~/.bash_profile and
+# never ~/.bashrc, so the profile has to hand over. Bash reads only the first
+# of these three that exists.
+check_bash_profile() {
+  local profile
+  for profile in "$HOME/.bash_profile" "$HOME/.bash_login" "$HOME/.profile"; do
+    [ -f "$profile" ] || continue
+    if ! grep -qs '\.bashrc' "$profile"; then
+      echo
+      warn "$profile does not source ~/.bashrc, so SSH logins will skip it."
+      echo "  Hand over with:"
+      echo "    echo 'if [ -f ~/.bashrc ]; then . ~/.bashrc; fi' >> $profile"
+    fi
+    return
+  done
+
+  echo
+  warn "No ~/.bash_profile, so SSH logins will not read ~/.bashrc. Create it with:"
+  echo "  echo 'if [ -f ~/.bashrc ]; then . ~/.bashrc; fi' >> ~/.bash_profile"
+}
+
 # --- Run -------------------------------------------------------------------
 
 check_php
@@ -268,4 +291,6 @@ if [ -f "$DOTFILES_DIR/.bashrc" ]; then
   echo
   echo "Then name this machine for the shell prompt:"
   echo "  vi ~/code/dotfiles/.hostname   # set DOTFILES_HOSTNAME"
+
+  check_bash_profile
 fi

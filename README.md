@@ -18,6 +18,14 @@ echo 'source ~/code/dotfiles/.bashrc' >> ~/.bashrc
 source ~/.bashrc
 ```
 
+An SSH session is a login shell, and login shells read `~/.bash_profile` rather
+than `~/.bashrc`, so the profile has to hand over. Most accounts already do; the
+install script checks and tells you if yours does not:
+
+```sh
+echo 'if [ -f ~/.bashrc ]; then . ~/.bashrc; fi' >> ~/.bash_profile
+```
+
 Finally, set the machine name shown in the prompt by editing
 `~/code/dotfiles/.hostname`:
 
