@@ -207,6 +207,62 @@ install_dotfiles() {
   git clone --quiet "$REPO_URL" "$DOTFILES_DIR"
 }
 
+# --- Hostname --------------------------------------------------------------
+
+# Echoes the name currently in .hostname, empty if the file is missing or the
+# name is still blank. Sourced in a subshell so it cannot leak into this one.
+read_hostname() {
+  local file="$DOTFILES_DIR/.hostname"
+  [ -f "$file" ] || return 0
+  ( set +u; . "$file" 2>/dev/null; echo "${DOTFILES_HOSTNAME:-}" )
+}
+
+# Every shell sources .hostname, so only accept a name that cannot turn into
+# something else once it is quoted into the file.
+valid_hostname() {
+  case "$1" in
+    "" | *[!A-Za-z0-9._-]*) return 1 ;;
+  esac
+}
+
+write_hostname() {
+  cat > "$DOTFILES_DIR/.hostname" <<EOF
+# Machine name shown in the shell prompt. Set it per machine.
+DOTFILES_HOSTNAME="$1"
+EOF
+}
+
+configure_hostname() {
+  local existing default reply
+
+  # Without a checkout there is nothing to write the name into.
+  [ -f "$DOTFILES_DIR/.bashrc" ] || return
+
+  existing="$(read_hostname)"
+  default="${existing:-${USER:-$(id -un 2>/dev/null || echo unknown)}}"
+
+  while :; do
+    if ! reply="$(prompt "Name this machine for the shell prompt [$default]: ")"; then
+      warn "No terminal available to ask for a name."
+      warn "Set it by hand in $DOTFILES_DIR/.hostname"
+      return
+    fi
+
+    reply="${reply:-$default}"
+    valid_hostname "$reply" && break
+
+    error "Use letters, digits, dots, dashes or underscores only."
+  done
+
+  if [ "$reply" = "$existing" ]; then
+    info "Prompt name left as \"$existing\""
+    return
+  fi
+
+  write_hostname "$reply"
+  info "Prompt name set to \"$reply\" in $DOTFILES_DIR/.hostname"
+}
+
 # --- Composer --------------------------------------------------------------
 
 install_composer() {
@@ -266,6 +322,7 @@ check_bash_profile() {
 check_php
 create_directories
 install_dotfiles
+configure_hostname
 install_composer
 
 echo
@@ -288,9 +345,11 @@ else
 fi
 
 if [ -f "$DOTFILES_DIR/.bashrc" ]; then
-  echo
-  echo "Then name this machine for the shell prompt:"
-  echo "  vi ~/code/dotfiles/.hostname   # set DOTFILES_HOSTNAME"
+  if [ -z "$(read_hostname)" ]; then
+    echo
+    echo "Then name this machine for the shell prompt:"
+    echo "  vi ~/code/dotfiles/.hostname   # set DOTFILES_HOSTNAME"
+  fi
 
   check_bash_profile
 fi

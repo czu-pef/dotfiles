@@ -26,15 +26,23 @@ install script checks and tells you if yours does not:
 echo 'if [ -f ~/.bashrc ]; then . ~/.bashrc; fi' >> ~/.bash_profile
 ```
 
-Finally, set the machine name shown in the prompt by editing
-`~/code/dotfiles/.hostname`:
+The install script asks for the machine name shown in the prompt and writes it to
+`~/code/dotfiles/.hostname`, defaulting to the account name:
+
+```sh
+Name this machine for the shell prompt [cpaneluser]: stage1
+```
+
+Re-run the script to change it later; the current name becomes the default, so
+pressing Enter keeps it. Editing the file by hand works just as well:
 
 ```sh
 DOTFILES_HOSTNAME="stage1"
 ```
 
 Re-running the install script is safe: it updates the checkout, leaves existing
-directories alone, and reinstalls Composer at the current version.
+directories alone, keeps the machine name unless you type a new one, and
+reinstalls Composer at the current version.
 
 ## What install.sh does
 
@@ -52,7 +60,11 @@ directories alone, and reinstalls Composer at the current version.
 4. **Clones this repo into `~/code/dotfiles`**, or fast-forwards it if it is
    already a checkout. A non-empty directory that is not a checkout is left
    untouched.
-5. **Installs Composer into `~/code/bin`**, verifying the installer checksum
+5. **Asks for the machine name** shown in the shell prompt and writes
+   `.hostname`. It defaults to the current name, or the account name on a fresh
+   install, and only accepts letters, digits, dots, dashes and underscores,
+   since every shell sources that file.
+6. **Installs Composer into `~/code/bin`**, verifying the installer checksum
    first.
 
 Composer is installed as `composer.phar` alongside a small `composer` wrapper
@@ -79,8 +91,9 @@ script tells you to ask your host.
 | `install.sh` | The bootstrap script described above |
 
 `.hostname` is generated per machine and is not tracked, so the prompt shows
-which host you are on. `.bashrc` creates it from `.hostname.stub` the first time
-it is sourced and warns until you fill it in.
+which host you are on. `install.sh` asks for the name and writes the file;
+`.bashrc` falls back to creating it from `.hostname.stub` the first time it is
+sourced and warns until it is filled in.
 
 ## Local development
 
