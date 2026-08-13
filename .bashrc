@@ -18,7 +18,18 @@ if [ ! -f ~/code/dotfiles/.hostname ] && [ -f ~/code/dotfiles/.hostname.stub ]; 
     cp ~/code/dotfiles/.hostname.stub ~/code/dotfiles/.hostname
 fi
 
-export PATH="$HOME/code/bin:/opt/alt/alt-nodejs22/root/usr/bin:$PATH"
+# Prepend only what is missing, so nested shells do not stack up copies.
+prepend_path() {
+    case ":$PATH:" in
+        *":$1:"*) ;;
+        *) PATH="$1:$PATH" ;;
+    esac
+}
+
+prepend_path "/opt/alt/alt-nodejs22/root/usr/bin"
+prepend_path "$HOME/code/bin"
+export PATH
+unset -f prepend_path
 
 source ~/code/dotfiles/.hostname
 source ~/code/dotfiles/.aliases_git
