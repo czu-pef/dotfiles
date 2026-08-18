@@ -18,10 +18,11 @@ DOTFILES_DIR="$CODE_DIR/dotfiles"
 REPO_URL="https://github.com/czu-pef/dotfiles.git"
 MIN_PHP="8.4"
 
-# Laravel will not boot without these. pdo_mysql/mysqli cover the database.
+# Laravel will not boot without these. pdo_mysql/mysqli cover the database,
+# sockets covers Reverb/websockets and anything talking raw TCP.
 REQUIRED_EXTENSIONS=(
   ctype curl dom fileinfo filter hash mbstring mysqli openssl pcre pdo
-  pdo_mysql session tokenizer xml zip
+  pdo_mysql session sockets tokenizer xml zip
 )
 
 # Not fatal, but almost always wanted (queues, images, money maths, i18n).
