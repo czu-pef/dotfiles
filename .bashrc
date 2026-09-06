@@ -50,8 +50,10 @@ if [ -z "${DOTFILES_HOSTNAME:-}" ]; then
     DOTFILES_HOSTNAME="unknown"
 fi
 
+# --porcelain rather than matching git's prose: the wording has changed between
+# versions ("working directory" became "working tree") and is translated.
 function parse_git_dirty() {
-    [[ $(git status 2> /dev/null | tail -n1) != *"working directory clean"* ]] && echo "*"
+    [ -n "$(git status --porcelain 2> /dev/null)" ] && echo "*"
 }
 
 function parse_git_branch() {
