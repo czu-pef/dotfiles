@@ -95,12 +95,21 @@ which host you are on. `install.sh` asks for the name and writes the file;
 `.bashrc` falls back to creating it from `.hostname.stub` the first time it is
 sourced and warns until it is filled in.
 
-## Local development
+## Working on the scripts
 
-The dotfiles are shared between machines, so `install.sh` is written for cPanel
-but does nothing macOS-specific either. To try changes without touching your
-real setup, run it against a throwaway home directory:
+Verify changes on a cPanel account, not here. This repo targets CloudLinux
+accounts reached over SSH, and a local run proves nothing: the PHP paths, the
+contents of `/dev`, and the shell built-ins all differ from a developer machine,
+which is exactly what these scripts care about. Do not run `install.sh` against a
+throwaway `HOME` either — it would take the macOS branch of every decision and
+report success for the wrong reasons.
+
+Static checks that parse without executing are welcome:
 
 ```sh
-HOME=/tmp/fakehome bash install.sh
+bash -n install.sh
+shellcheck install.sh
 ```
+
+The install URL serves `main` straight from GitHub, so a fix is not live until it
+is pushed. Push, then re-run the `curl` one-liner on the box to test it.
