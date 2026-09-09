@@ -53,8 +53,11 @@ reinstalls Composer at the current version.
 2. **Checks the PHP extensions Laravel needs**, including `pdo_mysql` and
    `mysqli` for MySQL. Anything missing is listed with instructions for enabling
    it, and the script waits: enable the extensions in cPanel in another tab,
-   press Enter, and it re-checks. Extensions that are merely nice to have
-   (`bcmath`, `gd`, `intl`, `opcache`, …) only produce a warning.
+   press Enter, and it re-checks. Type `s` to carry on without them, or run the
+   script with `SKIP_EXTENSION_CHECK=1` to skip the wait entirely — the rest of
+   the install still happens, but Laravel will not boot until they are enabled.
+   Extensions that are merely nice to have (`bcmath`, `gd`, `intl`, `opcache`, …)
+   only produce a warning.
 3. **Creates `~/code/bin`, `~/code/dotfiles` and `~/code/stage1`** if they do
    not exist.
 4. **Clones this repo into `~/code/dotfiles`**, or fast-forwards it if it is

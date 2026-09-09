@@ -5,7 +5,8 @@
 #   curl -fsSL https://raw.githubusercontent.com/czu-pef/dotfiles/main/install.sh | bash
 #
 # 1. Finds a PHP 8.4+ binary and checks the extensions Laravel needs.
-#    Missing ones pause the script with instructions on what to enable.
+#    Missing ones pause the script with instructions on what to enable; the
+#    check can be skipped at the prompt, or with SKIP_EXTENSION_CHECK=1.
 # 2. Creates ~/code/{bin,dotfiles,stage1} if missing.
 # 3. Clones (or updates) the dotfiles into ~/code/dotfiles.
 # 4. Installs Composer into ~/code/bin.
@@ -119,7 +120,7 @@ missing_extensions() {
 }
 
 check_php() {
-  local php_bin missing recommended reply
+  local php_bin missing recommended reply skipped=""
 
   if ! php_bin="$(find_php)"; then
     error "No PHP $MIN_PHP or newer found."
@@ -138,21 +139,35 @@ check_php() {
     missing="$(missing_extensions "$PHP_BIN" "${REQUIRED_EXTENSIONS[@]}")"
     [ -z "$missing" ] && break
 
+    # An escape hatch for a run with no terminal to prompt on, or when the
+    # missing extensions are known to be irrelevant to what is being deployed.
+    if [ -n "${SKIP_EXTENSION_CHECK:-}" ]; then
+      skipped=1
+      break
+    fi
+
     error "Missing required PHP extensions: $missing"
     echo
     enable_instructions "$PHP_BIN"
     echo
 
-    if ! reply="$(prompt 'Press Enter once enabled to re-check, or type q to quit: ')"; then
+    if ! reply="$(prompt 'Press Enter once enabled to re-check, s to skip, or q to quit: ')"; then
       error "No terminal available to wait on. Enable the extensions, then re-run."
+      error "Set SKIP_EXTENSION_CHECK=1 to carry on without them."
       exit 1
     fi
     case "$reply" in
       q | Q | quit) exit 1 ;;
+      s | S | skip) skipped=1; break ;;
     esac
   done
 
-  info "All required extensions are enabled."
+  if [ -n "$skipped" ]; then
+    warn "Carrying on without: $missing"
+    warn "Laravel will not boot until they are enabled."
+  else
+    info "All required extensions are enabled."
+  fi
 
   recommended="$(missing_extensions "$PHP_BIN" "${RECOMMENDED_EXTENSIONS[@]}")"
   if [ -n "$recommended" ]; then
