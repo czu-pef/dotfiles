@@ -91,11 +91,17 @@ find_php() {
 
 # How to enable extensions depends on which PHP stack the account is on.
 enable_instructions() {
-  local php_bin="$1"
+  local php_bin="$1" missing=" $2 "
   case "$php_bin" in
     /opt/alt/*)
       echo "  cPanel -> Software -> Select PHP Version -> Extensions tab"
       echo "  Tick the extensions listed above, changes save automatically."
+      # The Selector names these by their mysqlnd-backed builds.
+      case "$missing" in
+        *" mysqli "* | *" pdo_mysql "*)
+          echo "  For mysqli/pdo_mysql tick these three: mysqlnd, nd_mysqli, nd_pdo_mysql"
+          ;;
+      esac
       ;;
     /opt/cpanel/ea-php*)
       echo "  EasyApache PHP extensions are server-wide and need WHM/root access."
@@ -148,7 +154,7 @@ check_php() {
 
     error "Missing required PHP extensions: $missing"
     echo
-    enable_instructions "$PHP_BIN"
+    enable_instructions "$PHP_BIN" "$missing"
     echo
 
     if ! reply="$(prompt 'Press Enter once enabled to re-check, s to skip, or q to quit: ')"; then
@@ -172,7 +178,7 @@ check_php() {
   recommended="$(missing_extensions "$PHP_BIN" "${RECOMMENDED_EXTENSIONS[@]}")"
   if [ -n "$recommended" ]; then
     warn "Optional extensions not enabled: $recommended"
-    enable_instructions "$PHP_BIN"
+    enable_instructions "$PHP_BIN" "$recommended"
   fi
 }
 
