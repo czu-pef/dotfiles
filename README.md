@@ -58,7 +58,7 @@ reinstalls Composer at the current version.
    the install still happens, but Laravel will not boot until they are enabled.
    Extensions that are merely nice to have (`bcmath`, `gd`, `intl`, `opcache`, …)
    only produce a warning.
-3. **Creates `~/code/bin`, `~/code/dotfiles` and `~/code/stage1`** if they do
+3. **Creates `~/code/bin`, `~/code/dotfiles` and `~/code/app`** if they do
    not exist.
 4. **Clones this repo into `~/code/dotfiles`**, or fast-forwards it if it is
    already a checkout. A non-empty directory that is not a checkout is left

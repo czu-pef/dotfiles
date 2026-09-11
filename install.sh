@@ -7,7 +7,7 @@
 # 1. Finds a PHP 8.4+ binary and checks the extensions Laravel needs.
 #    Missing ones pause the script with instructions on what to enable; the
 #    check can be skipped at the prompt, or with SKIP_EXTENSION_CHECK=1.
-# 2. Creates ~/code/{bin,dotfiles,stage1} if missing.
+# 2. Creates ~/code/{bin,dotfiles,app} if missing.
 # 3. Clones (or updates) the dotfiles into ~/code/dotfiles.
 # 4. Installs Composer into ~/code/bin.
 
@@ -186,7 +186,7 @@ check_php() {
 
 create_directories() {
   local dir
-  for dir in "$BIN_DIR" "$DOTFILES_DIR" "$CODE_DIR/stage1"; do
+  for dir in "$BIN_DIR" "$DOTFILES_DIR" "$CODE_DIR/app"; do
     if [ -d "$dir" ]; then
       info "$dir already exists"
     else
