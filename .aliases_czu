@@ -1,6 +1,6 @@
 
 # alias composer="php ~/code/bin/composer"
 
-alias prod="cd ~/code/app"
-alias dev="cd ~/code/app"
-alias app="cd ~/code/app"
+alias prod="cd ~/code/www"
+alias dev="cd ~/code/www"
+alias app="cd ~/code/www"
