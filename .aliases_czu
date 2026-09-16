@@ -4,3 +4,4 @@
 alias prod="cd ~/code/www"
 alias dev="cd ~/code/www"
 alias app="cd ~/code/www"
+alias www="cd ~/code/www"
