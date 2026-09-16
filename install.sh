@@ -241,7 +241,7 @@ read_hostname() {
 # something else once it is quoted into the file.
 valid_hostname() {
   case "$1" in
-    "" | *[!A-Za-z0-9._-]*) return 1 ;;
+    "" | *[!A-Za-z0-9._\ -]*) return 1 ;;
   esac
 }
 
@@ -271,7 +271,7 @@ configure_hostname() {
     reply="${reply:-$default}"
     valid_hostname "$reply" && break
 
-    error "Use letters, digits, dots, dashes or underscores only."
+    error "Use letters, digits, spaces, dots, dashes or underscores only."
   done
 
   if [ "$reply" = "$existing" ]; then
