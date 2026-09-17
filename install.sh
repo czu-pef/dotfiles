@@ -20,14 +20,17 @@ REPO_URL="https://github.com/czu-pef/dotfiles.git"
 MIN_PHP="8.4"
 
 # Laravel will not boot without these. pdo_mysql/mysqli cover the database,
-# sockets covers Reverb/websockets and anything talking raw TCP.
+# sockets covers Reverb/websockets and anything talking raw TCP, gd/imagick
+# cover image processing, ldap covers directory login, bcmath money maths,
+# iconv/intl i18n and pcntl/posix queue worker timeouts and Horizon.
 REQUIRED_EXTENSIONS=(
-  ctype curl dom fileinfo filter hash mbstring mysqli openssl pcre pdo
-  pdo_mysql session sockets tokenizer xml zip
+  bcmath ctype curl dom fileinfo filter gd hash iconv imagick intl ldap
+  mbstring mysqli openssl pcntl pcre pdo pdo_mysql posix session sockets
+  tokenizer xml zip
 )
 
-# Not fatal, but almost always wanted (queues, images, money maths, i18n).
-RECOMMENDED_EXTENSIONS=(bcmath exif gd iconv intl opcache pcntl posix sodium)
+# Not fatal, but almost always wanted (image metadata, caching, crypto).
+RECOMMENDED_EXTENSIONS=(exif opcache sodium)
 
 RED="\033[1;31m"
 YELLOW="\033[1;33m"

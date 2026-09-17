@@ -51,12 +51,13 @@ reinstalls Composer at the current version.
    whatever is on `$PATH`. If there is no suitable binary, it tells you to pick
    PHP 8.4 in *cPanel → Software → Select PHP Version* and stops.
 2. **Checks the PHP extensions Laravel needs**, including `pdo_mysql` and
-   `mysqli` for MySQL. Anything missing is listed with instructions for enabling
-   it, and the script waits: enable the extensions in cPanel in another tab,
-   press Enter, and it re-checks. Type `s` to carry on without them, or run the
+   `mysqli` for MySQL, `gd` and `imagick` for images, and `ldap`. Anything
+   missing is listed with instructions for enabling it, and the script waits:
+   enable the extensions in cPanel in another tab, press Enter, and it
+   re-checks. Type `s` to carry on without them, or run the
    script with `SKIP_EXTENSION_CHECK=1` to skip the wait entirely — the rest of
    the install still happens, but Laravel will not boot until they are enabled.
-   Extensions that are merely nice to have (`bcmath`, `gd`, `intl`, `opcache`, …)
+   Extensions that are merely nice to have (`exif`, `opcache`, `sodium`)
    only produce a warning.
 3. **Creates `~/code/bin`, `~/code/dotfiles` and `~/code/www`** if they do
    not exist.
